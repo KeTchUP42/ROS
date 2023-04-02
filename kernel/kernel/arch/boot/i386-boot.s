@@ -65,6 +65,8 @@ _start:
 	; yet. The GDT should be loaded here. Paging should be enabled here.
 	; C++ features such as global constructors and exceptions will require
 	; runtime support to work as well.
+	extern kernel_init
+    call kernel_init
  
 	; Enter the high-level kernel. The ABI requires the stack is 16-byte
 	; aligned at the time of the call instruction (which afterwards pushes
@@ -76,6 +78,10 @@ _start:
 	extern kmain
 	call kmain
  
+    ; This code calls kernel finalize functions.
+	extern kernel_fini
+    call kernel_fini
+
 	; If the system has nothing more to do, put the computer into an
 	; infinite loop. To do that:
 	; 1) Disable interrupts with cli (clear interrupt enable in eflags).

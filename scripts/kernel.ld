@@ -22,6 +22,12 @@ SECTIONS
 	/* Read-only data. */
 	.rodata BLOCK(4K) : ALIGN(4K)
 	{
+        __init_array_start = .;
+		*(.ctors)
+        __init_array_end = .;
+        __fini_array_start = .;
+		*(.dtors)
+        __fini_array_end = .;
 		*(.rodata)
 	}
  

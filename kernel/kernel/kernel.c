@@ -175,6 +175,14 @@ void tty_print(const char *data)
     tty_write(data, strlen(data));
 }
 
+#include <kernel/dctors.h>
+
+void bye(void)
+{
+    tty_print("Bye!\n");
+}
+DTOR(bye)
+
 void kmain(void)
 {
     /* Initialize tty interface */
