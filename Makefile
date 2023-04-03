@@ -5,7 +5,10 @@
 # LINKER = x86_64-elf-ld
 # LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic
 #
-# YOU KERNEL-CODE MUST CONTAIN:
+# YOUR QEMU MUST BE X86_64:
+# qemu-system-x86_64
+#
+# YOUR KERNEL-CODE MUST CONTAIN:
 # kernel/arch/boot/x86_64-boot.s - _start function must setup and jump to the long mode and then call kernel entry point.
 #
 # TOOLCHAIN:
@@ -74,7 +77,7 @@ $(BUILD_DIR)/%.s.o: %.s
 	$(AS) $(AS_FLAGS) $< -o $@
 
 run: $(IMAGE_PATH)
-	qemu-system-x86_64 -cdrom $(IMAGE_PATH)
+	qemu-system-i386 -cdrom $(IMAGE_PATH)
 
 clean:
 	rm -rf $(ISO_DIR)/*
