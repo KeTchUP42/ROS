@@ -2,6 +2,8 @@
 #
 # AS_FLAGS = -felf64
 # CC = x86_64-elf-gcc
+# AR = x86_64-elf-ar
+# AR_FLAGS = crs --target=elf64-x86-64
 # LINKER = x86_64-elf-ld
 # LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic
 #
@@ -20,6 +22,9 @@ AS_FLAGS = -felf32
 CC = i686-elf-gcc
 CC_FLAGS = -std=gnu99 -Os -Wall -Wextra -Werror -ffreestanding
 
+AR = i686-elf-ar
+AR_FLAGS = crs --target=elf32-i386
+
 BUILD_SCRIPTS = scripts
 
 LINKER = i686-elf-ld
@@ -27,20 +32,30 @@ LD_SCRIPT = $(BUILD_SCRIPTS)/kernel.ld
 LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 
 ASM_SRC = kernel/kernel/arch/boot/i386-boot.s
-KERNEL_SRC = kernel/kernel/kernel.c kernel/kernel/dctors.c
+KERNEL_SRC = kernel/kernel/kernel.c \
+			 kernel/kernel/dctors.c \
+			 kernel/kernel/init.c   \
+			 kernel/kernel/fini.c   \
 
-# LIBC_SRC =
+######################################################################
+# IF YOU WANT TO ADD SOME ADDITIONAL KERNEL MODULES CREATE DIR       #
+# WITH  MAKEFILE AND ADD CORRESPONDING DIR'S NAME TO THE LIST BELOW: #
+KERNEL_MODULES = libc                                                #
+######################################################################
 
-KERNEL_INCLUDE_DIR = kernel
-# LIBC_INCLUDE_DIR = libc
+KERNEL_INCLUDE_DIRS = kernel
+MODULES_INCLUDE_DIRS := $(addsuffix /include, $(KERNEL_MODULES))
 
-CC_FLAGS += -I$(KERNEL_INCLUDE_DIR)
-# CC_FLAGS += -I$(LIBC_INCLUDE_DIR)
+# Each module must keep it's interface headers in $(MODULE_NAME)/$(MODULE_HEADERS_DIR) directory.
+MODULE_HEADERS_DIR = include
+
+CC_FLAGS += $(addprefix -I, $(KERNEL_INCLUDE_DIRS) $(MODULES_INCLUDE_DIRS) $(MODULE_HEADERS_DIR))
 
 ISO_DIR = iso
 BUILD_DIR = build
 
-OBJECTS := $(addprefix $(BUILD_DIR)/, $(ASM_SRC:.s=.s.o) $(KERNEL_SRC:.c=.o)) # $(LIBC_SRC:.c=.o))
+OBJECTS := $(addprefix $(BUILD_DIR)/, $(ASM_SRC:.s=.s.o) $(KERNEL_SRC:.c=.o))
+MODULES_OBJECTS := $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(KERNEL_MODULES)))
 
 IMAGE = ROS.iso
 TARGET = ROS.elf
@@ -52,7 +67,7 @@ TARGET_PATH := $(BUILD_DIR)/$(TARGET)
 
 all: iso
 
-iso: build
+iso: $(TARGET_PATH)
 	rm -f $(IMAGE_PATH)
 	mkdir -p $(ISO_DIR)/boot/grub
 	cp $(TARGET_PATH) $(ISO_DIR)/boot/$(TARGET)
@@ -61,12 +76,15 @@ iso: build
 
 build: $(TARGET_PATH)
 
-$(TARGET_PATH): $(OBJECTS) $(LD_SCRIPT)
-	$(LINKER) $(LINKER_FLAGS) $(OBJECTS) -o $@
+$(TARGET_PATH): $(OBJECTS) $(MODULES_OBJECTS) $(LD_SCRIPT)
+	$(LINKER) $(LINKER_FLAGS) $(OBJECTS) $(MODULES_OBJECTS) -o $@
 	# https://stackoverflow.com/questions/31453859/how-to-remove-a-specific-elf-section-without-stripping-other-symbols
 	objcopy --remove-section .eh_frame $@
 	objcopy --remove-section .symtab   $@
 	objcopy --remove-section .comment  $@
+
+$(BUILD_DIR)/%.a: %/Makefile
+	$(MAKE) -C $(dir $<) KERNEL_BUILD=1 BUILD_DIR=$(BUILD_DIR) CC=$(CC) CC_FLAGS="$(CC_FLAGS)" AR=$(AR) AR_FLAGS="$(AR_FLAGS)"
 
 $(BUILD_DIR)/%.o: %.c
 	mkdir -p $(dir $@)

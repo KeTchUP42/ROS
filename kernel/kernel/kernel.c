@@ -12,6 +12,8 @@
 #error "This tutorial needs to be compiled with a ix86-elf compiler!"
 #endif
 
+#include <libc/math.h>
+#include <libc/string.h>
 
 /* Hardware text mode color constants. */
 enum vga_color
@@ -42,14 +44,6 @@ static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
 static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 {
     return (uint16_t) uc | (uint16_t) color << 8;
-}
-
-size_t strlen(const char *str)
-{
-    size_t len = 0;
-    while (str[len])
-        len++;
-    return len;
 }
 
 static const size_t VGA_WIDTH = 80;
@@ -85,13 +79,6 @@ void tty_put(char c, uint8_t color, size_t x, size_t y)
 {
     const size_t index = y * VGA_WIDTH + x;
     tty_buffer[index] = vga_entry(c, color);
-}
-
-int abs(int n)
-{
-    if (n < 0)
-        return -n;
-    return n;
 }
 
 void tty_move_cursor_forward(void)
@@ -175,19 +162,11 @@ void tty_print(const char *data)
     tty_write(data, strlen(data));
 }
 
-#include <kernel/dctors.h>
-
-void bye(void)
-{
-    tty_print("Bye!\n");
-}
-DTOR(bye)
-
 void kmain(void)
 {
     /* Initialize tty interface */
-    tty_init();
+    /* tty_init(); */
 
     /* Newline support is left as an exercise. */
-    tty_print("Hello, kernel World!\n");
+    tty_print("HELLO KERNEL WORLD!\n");
 }
