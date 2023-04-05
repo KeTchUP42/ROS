@@ -22,12 +22,12 @@ SECTIONS
 	/* Read-only data. */
 	.rodata BLOCK(4K) : ALIGN(4K)
 	{
-        __init_array_start = .;
-		*(.ctors)
-        __init_array_end = .;
-        __fini_array_start = .;
-		*(.dtors)
-        __fini_array_end = .;
+        PROVIDE_HIDDEN(__init_array_start = .);
+        KEEP (*(SORT_BY_INIT_PRIORITY(.ctors.*)))
+        PROVIDE_HIDDEN(__init_array_end = .);
+        PROVIDE_HIDDEN(__fini_array_start = .);
+        KEEP (*(SORT_BY_INIT_PRIORITY(.dtors.*)))
+        PROVIDE_HIDDEN(__fini_array_end = .);
 		*(.rodata)
 	}
  
