@@ -4,7 +4,6 @@
 /*
  * Here is some basic general-purpose support macros:
 */
-
 #define TO_STRING( X ) #X
 
 #define __CONCAT_IMPL_2( A, B ) A##B

@@ -1,9 +1,9 @@
 #include <kernel/dctors.h>
+#include <libc/stdio.h>
 
 static void bye(void)
 {
-    void tty_print(const char *data);
-    tty_print("Bye!\n");
+    puts("Bye!\n");
 }
 
 DTOR(bye, 999)

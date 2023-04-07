@@ -10,6 +10,7 @@ AR_FLAGS ?=
 
 MODULE_SRC = src/math.c   \
 			 src/stdio.c  \
+			 src/stdlib.c \
 			 src/string.c \
 
 ifeq ($(KERNEL_BUILD),1)
@@ -33,7 +34,7 @@ $(MODULE_TARGET_PATH): $(MODULE_OBJECTS)
 
 $(MODULE_BUILD_DIR)%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CC_FLAGS) -c $< -o $@
+	$(CC) $(CC_FLAGS) -DKERNEL_BUILD=$(KERNEL_BUILD) -c $< -o $@
 
 clean:
 	rm -rf $(MODULE_BUILD_DIR)/*

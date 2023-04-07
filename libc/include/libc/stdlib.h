@@ -9,6 +9,12 @@ extern "C" {
 
 /* stdlib.h header functions declaration. */
 
+__attribute__((__noreturn__))
+void abort(void);
+
+__attribute__((__noreturn__))
+void die(const char*);
+
 #ifdef __cplusplus
 }
 #endif

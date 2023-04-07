@@ -9,6 +9,12 @@ extern "C" {
 
 /* stdio.h header functions declaration. */
 
+#define EOF (-1)
+#define WRITE_SUCCESS (0)
+
+int putchar(int);
+int puts(const char*);
+
 #ifdef __cplusplus
 }
 #endif
