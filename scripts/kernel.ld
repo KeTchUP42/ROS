@@ -37,11 +37,21 @@ SECTIONS
 		*(.data)
 	}
  
-	/* Read-write data (uninitialized) and stack */
+	/* Read-write data (uninitialized), heap and stack */
 	.bss BLOCK(4K) : ALIGN(4K)
 	{
 		*(COMMON)
 		*(.bss)
+
+        . = ALIGN(4K);
+        PROVIDE_HIDDEN(__kernel_heap_start = .);
+        *(.bss.heap)
+        PROVIDE_HIDDEN(__kernel_heap_end = .);
+
+        . = ALIGN(4K);
+        PROVIDE_HIDDEN(__kernel_stack_start = .);
+		*(.bss.stack)
+        PROVIDE_HIDDEN(__kernel_stack_end = .);
 	}
  
 	/* The compiler may produce other sections, by default it will put them in

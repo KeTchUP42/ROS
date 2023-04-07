@@ -32,10 +32,11 @@ LD_SCRIPT = $(BUILD_SCRIPTS)/kernel.ld
 LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 
 ASM_SRC = kernel/kernel/arch/boot/i386-boot.s
-KERNEL_SRC = kernel/kernel/kernel.c \
-			 kernel/kernel/dctors.c \
-			 kernel/kernel/init.c   \
-			 kernel/kernel/fini.c   \
+KERNEL_SRC = kernel/kernel/kernel.c		  \
+			 kernel/kernel/dctors.c       \
+			 kernel/kernel/init.c         \
+			 kernel/kernel/fini.c         \
+			 kernel/kernel/memory/kheap.c \
 
 ######################################################################
 # IF YOU WANT TO ADD SOME ADDITIONAL KERNEL MODULES CREATE DIR       #

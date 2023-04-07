@@ -162,11 +162,9 @@ void tty_print(const char *data)
     tty_write(data, strlen(data));
 }
 
+#include <libc/stdio.h>
+
 void kmain(void)
 {
-    /* Initialize tty interface */
-    /* tty_init(); */
-
-    /* Newline support is left as an exercise. */
-    tty_print("HELLO KERNEL WORLD!\n");
+    puts("HELLO KERNEL WORLD!\n");
 }

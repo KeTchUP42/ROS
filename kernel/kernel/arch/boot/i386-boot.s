@@ -26,11 +26,18 @@ align 4
 ; System V ABI standard and de-facto extensions. The compiler will assume the
 ; stack is properly aligned and failure to align the stack will result in
 ; undefined behavior.
-section .bss
-align 16
-stack_bottom:
-resb 16384 ; 16 KiB
-stack_top:
+[section .bss.stack nobits align=4096]
+global __kernel_stack_size
+__kernel_stack_size: equ 65536
+
+resb __kernel_stack_size ; 64 KiB
+
+; Kernel heap memory:
+[section .bss.heap nobits align=4096]
+global __kernel_heap_size
+__kernel_heap_size: equ 1048576
+
+resb __kernel_heap_size ; 1 MB
  
 ; The linker script specifies _start as the entry point to the kernel and the
 ; bootloader will jump to this position once the kernel has been loaded. It
@@ -55,7 +62,8 @@ _start:
 	; To set up a stack, we set the esp register to point to the top of our
 	; stack (as it grows downwards on x86 systems). This is necessarily done
 	; in assembly as languages such as C cannot function without a stack.
-	mov esp, stack_top
+    extern __kernel_stack_start
+	mov esp, __kernel_stack_start
  
 	; This is a good place to initialize crucial processor state before the
 	; high-level kernel is entered. It's best to minimize the early
