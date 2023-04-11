@@ -12,8 +12,10 @@ extern "C" {
 #define EOF (-1)
 #define WRITE_SUCCESS (0)
 
-int putchar(int);
-int puts(const char*);
+int putchar(int ch);
+int puts(const char *str);
+int printf(const char *restrict format, ... );
+
 
 #ifdef __cplusplus
 }

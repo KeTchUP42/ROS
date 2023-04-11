@@ -13,7 +13,7 @@
  *
  * @return Address of allocated data with HEAP_ALIGN align or NULL on failure.
  */
-void* kmalloc(size_t);
+void* kmalloc(size_t sz);
 
 /**
  * @brief Deallocates the space previously allocated by kmalloc().
@@ -23,7 +23,7 @@ void* kmalloc(size_t);
  * Kernel will call die() if the value of input ptr not equal a value returned earlier by kmalloc().
  * Kernel will call die() if the memory area referred to by ptr has already been deallocated.
  */
-void kfree(void*);
+void kfree(void *ptr);
 
 /**
  * @brief Available kernel heap memory size in bytes.

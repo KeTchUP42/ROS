@@ -1,7 +1,12 @@
 #include <kernel/dctors.h>
+#include <kernel/tty/ktty.h>
+
 #include <libc/stdio.h>
 
-void tty_init(void);
+static void tty_init(void)
+{
+    tty_add(kernel_default_tty());
+}
 
 static void hi(void)
 {

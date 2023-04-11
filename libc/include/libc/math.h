@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-int abs(int);
+int abs(int n);
 
 #ifdef __cplusplus
 }

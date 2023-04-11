@@ -31,9 +31,9 @@ extern "C" {
 
 /* stdlib.h cmptor_type functions definition: */
 
-typedef bool(*cmptor_type)(const void*, const void*);
+typedef bool(*cmptor_type)(const void *, const void *);
 
-static inline bool ptr_cmp(const void* lhs, const void* rhs)
+static inline bool ptr_cmp(const void *lhs, const void *rhs)
 {
     return (lhs == rhs);
 }
@@ -44,7 +44,7 @@ __attribute__((__noreturn__))
 void abort(void);
 
 __attribute__((__noreturn__))
-void die(const char*);
+void die(const char *str);
 
 #ifdef __cplusplus
 }
