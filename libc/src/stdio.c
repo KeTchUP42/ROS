@@ -2,9 +2,7 @@
 
 int puts(const char *str)
 {
-#if KERNEL_BUILD
-    // TODO: change after tty system update
-    void tty_print(const char *data);
+#ifdef KERNEL_CODE
     tty_print(str);
     return WRITE_SUCCESS;
 #else
@@ -15,9 +13,7 @@ int puts(const char *str)
 
 int putchar(int ch)
 {
-#if KERNEL_BUILD
-    // TODO: change after tty system update
-    void tty_putchar(char c);
+#ifdef KERNEL_CODE
     tty_putchar(ch);
     return WRITE_SUCCESS;
 #else

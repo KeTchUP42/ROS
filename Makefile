@@ -20,7 +20,7 @@ AS = nasm
 AS_FLAGS = -felf32
 
 CC = i686-elf-gcc
-CC_FLAGS = -std=gnu99 -Os -Wall -Wextra -Werror -ffreestanding
+CC_FLAGS = -std=gnu99 -O2 -Wall -Wextra -Werror -ffreestanding -DKERNEL_CODE
 
 AR = i686-elf-ar
 AR_FLAGS = crs --target=elf32-i386
@@ -45,12 +45,15 @@ KERNEL_MODULES = libc                                                #
 ######################################################################
 
 KERNEL_INCLUDE_DIRS = kernel
-MODULES_INCLUDE_DIRS := $(addsuffix /include, $(KERNEL_MODULES))
 
-# Each module must keep it's interface headers in $(MODULE_NAME)/$(MODULE_HEADERS_DIR) directory.
+# Each module must keep it's interface headers in $(MODULE_NAME)/$(MODULE_HEADERS_DIR)/$(MODULE_NAME) directory.
 MODULE_HEADERS_DIR = include
 
-CC_FLAGS += $(addprefix -I, $(KERNEL_INCLUDE_DIRS) $(MODULES_INCLUDE_DIRS) $(MODULE_HEADERS_DIR))
+MODULES_INCLUDE_DIRS := $(addsuffix /$(MODULE_HEADERS_DIR), $(KERNEL_MODULES))
+
+# Additional compiler flags for the include-directories for kernel and modules:
+KERNEL_INCLUDE_FLAGS := $(addprefix -I, $(KERNEL_INCLUDE_DIRS) $(MODULES_INCLUDE_DIRS))
+MODULE_INCLUDE_FLAGS := $(addprefix -I./../, $(KERNEL_INCLUDE_DIRS)) $(addprefix -I, $(MODULE_HEADERS_DIR))
 
 ISO_DIR = iso
 BUILD_DIR = build
@@ -85,11 +88,12 @@ $(TARGET_PATH): $(OBJECTS) $(MODULES_OBJECTS) $(LD_SCRIPT)
 	objcopy --remove-section .comment  $@
 
 $(BUILD_DIR)/%.a: %/Makefile
-	$(MAKE) -C $(dir $<) KERNEL_BUILD=1 BUILD_DIR=$(BUILD_DIR) CC=$(CC) CC_FLAGS="$(CC_FLAGS)" AR=$(AR) AR_FLAGS="$(AR_FLAGS)"
+	$(MAKE) -C $(dir $<) KERNEL_BUILD=1 BUILD_DIR=$(BUILD_DIR) CC=$(CC) \
+		CC_FLAGS="$(CC_FLAGS)" MODULE_INCLUDE_FLAGS="$(MODULE_INCLUDE_FLAGS)" AR=$(AR) AR_FLAGS="$(AR_FLAGS)"
 
 $(BUILD_DIR)/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CC_FLAGS) -c $< -o $@
+	$(CC) $(CC_FLAGS) $(KERNEL_INCLUDE_FLAGS) -c $< -o $@
 
 $(BUILD_DIR)/%.s.o: %.s
 	mkdir -p $(dir $@)

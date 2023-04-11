@@ -4,6 +4,7 @@ KERNEL_BUILD ?= 0
 
 CC ?=
 CC_FLAGS ?=
+MODULE_INCLUDE_FLAGS ?=
 
 AR ?=
 AR_FLAGS ?=
@@ -34,7 +35,7 @@ $(MODULE_TARGET_PATH): $(MODULE_OBJECTS)
 
 $(MODULE_BUILD_DIR)%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CC_FLAGS) -DKERNEL_BUILD=$(KERNEL_BUILD) -c $< -o $@
+	$(CC) $(CC_FLAGS) $(MODULE_INCLUDE_FLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(MODULE_BUILD_DIR)/*

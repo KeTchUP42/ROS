@@ -3,7 +3,7 @@
 
 void abort(void)
 {
-#if (KERNEL_BUILD == 1)
+#ifdef KERNEL_CODE
     puts("KERNEL PANIC!\n");
     __asm__("hlt");
 #else

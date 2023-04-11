@@ -3,8 +3,7 @@
 
 #include <stdint.h>
 
-#include <kernel/utils/kld.h>
-#include <kernel/utils/kmacros.h>
+#include <libc/stdlib.h>
 
 typedef void (*ctor_type)(void);
 typedef void (*dtor_type)(void);
