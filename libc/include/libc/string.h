@@ -18,7 +18,6 @@ extern "C" {
 
 size_t strlen(const char *str);
 
-
 #ifdef __cplusplus
 }
 #endif
