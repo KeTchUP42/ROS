@@ -6,7 +6,7 @@ tty_entry_type *kernel_default_tty(void)
 {
     if (tty == NULL)
     {
-        uint8_t color = tvga_entry_color(TVGA_COLOR_LIGHT_GREY, TVGA_COLOR_BLACK);
+        VGA_TEXT_COLOR_TYPE color = tvga_entry_color(TVGA_COLOR_LIGHT_GREY, TVGA_COLOR_BLACK);
         screen_zone_type scrn =
         {
             .scrn_x = 0,

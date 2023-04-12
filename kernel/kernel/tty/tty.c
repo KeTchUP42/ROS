@@ -84,14 +84,14 @@ screen_zone_type *tty_screen_zone_create(struct screen_zone *stack_sample)
 /**
  * @brief Factory function for TTY entry creation.
  */
-tty_entry_type *tty_create(size_t w, size_t h, uint8_t clr, struct screen_zone *scrn)
+tty_entry_type *tty_create(size_t w, size_t h, TTY_COLOR_TYPE clr, struct screen_zone *scrn)
 {
     tty_entry_type *tty = (tty_entry_type *)kmalloc(sizeof(tty_entry_type));
     tty->tty_width = w;
     tty->tty_height = h;
     /* */
     tty->color = clr;
-    tty->mem_buffer = (uint16_t *)kmalloc(w * h * sizeof(uint16_t));
+    tty->mem_buffer = (TTY_CELL_TYPE *)kmalloc(w * h * sizeof(TTY_CELL_TYPE));
     tty->scrn = scrn;
 
     /**
@@ -263,7 +263,7 @@ int tty_flush(struct tty_entry *tty)
     size_t scrn_width = tty->scrn->scrn_width;
     size_t scrn_height = tty->scrn->scrn_height;
 
-    uint16_t *vga_cell_ptr;
+    TTY_CELL_TYPE *vga_cell_ptr;
 
     for (size_t y = 0; (y < tty_height) && (y < scrn_height); ++y)
     {
@@ -271,7 +271,7 @@ int tty_flush(struct tty_entry *tty)
 
         for (size_t x = 0; (x < tty_width) && (x < scrn_width); ++x)
         {
-            vga_cell_ptr = (uint16_t *)vga_cell(system_text_vga(), tty->scrn, x, y);
+            vga_cell_ptr = (TTY_CELL_TYPE *)vga_cell(system_text_vga(), tty->scrn, x, y);
             if (vga_cell_ptr == NULL)
                 break;
 
@@ -461,11 +461,22 @@ void tty_move_cursor(struct tty_entry *tty, int n)
 
 static int tty_escape(struct tty_entry *tty, char ch)
 {
-    static int escape_flag = 0;
-    if (escape_flag == 1)
+    static size_t escape_flag = 0;
+    static TTY_COLOR_TYPE tmp_clr = 0;
+
+    if (escape_flag != 0)
     {
-        tty->color = (uint8_t)ch;
-        escape_flag = 0;
+        tmp_clr |= (uint8_t)ch;
+        if (--escape_flag != 0)
+        {
+            /* For warning disabling, compiler will optimize this: */
+            if (sizeof(TTY_COLOR_TYPE) > sizeof(uint8_t))
+                tmp_clr <<= (sizeof(uint8_t) * 8);
+            return EXIT_SUCCESS;
+        }
+
+        tty->color = tmp_clr;
+        tmp_clr = 0;
         return EXIT_SUCCESS;
     }
     switch (ch)
@@ -482,7 +493,7 @@ static int tty_escape(struct tty_entry *tty, char ch)
             break;
         /* '\e' */
         case 0x1b:
-            escape_flag = 1;
+            escape_flag = sizeof(TTY_COLOR_TYPE);
             break;
         default:
             return EXIT_FAILURE;

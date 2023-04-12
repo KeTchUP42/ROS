@@ -29,17 +29,19 @@ enum tvga_color
 #define VGA_TEXT ((void*)(0xB8000))
 #define VGA_TEXT_WIDTH (80)
 #define VGA_TEXT_HEIGHT (25)
+#define VGA_TEXT_COLOR_TYPE uint8_t
+#define VGA_TEXT_CELL_TYPE uint16_t
 
 const vga_entry_type *system_text_vga(void);
 
-static inline uint8_t tvga_entry_color(enum tvga_color fg, enum tvga_color bg)
+static inline VGA_TEXT_COLOR_TYPE tvga_entry_color(enum tvga_color fg, enum tvga_color bg)
 {
-    return fg | bg << 4;
+    return fg | (bg << ((sizeof(VGA_TEXT_COLOR_TYPE) * 8) / 2));
 }
 
-static inline uint16_t tvga_entry(unsigned char uc, uint8_t color)
+static inline VGA_TEXT_CELL_TYPE tvga_entry(unsigned char uc, VGA_TEXT_COLOR_TYPE color)
 {
-    return (uint16_t) uc | (uint16_t) color << 8;
+    return ((VGA_TEXT_CELL_TYPE) uc) | (((VGA_TEXT_CELL_TYPE) color) << ((sizeof(VGA_TEXT_CELL_TYPE) * 8) / 2));
 }
 
 #endif // TVGA_H
