@@ -11,6 +11,6 @@ void sleep(size_t mls)
         for (size_t j = 0; j < WAIT_FOR_MILLISECOND; ++j)
             wait();
 #else
-    // TODO: exit() syscall
+    // TODO: sleep() syscall
 #endif
 }
