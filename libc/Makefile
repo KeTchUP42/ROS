@@ -13,6 +13,7 @@ MODULE_SRC = src/math.c   \
 			 src/stdio.c  \
 			 src/stdlib.c \
 			 src/string.c \
+			 src/time.c   \
 
 ifeq ($(KERNEL_BUILD),1)
 	MODULE_BUILD_DIR := ../$(BUILD_DIR)/$(MODULE_NAME)/

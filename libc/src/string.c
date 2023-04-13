@@ -1,3 +1,5 @@
+#include <libc/string.h>
+
 #include <stddef.h>
 
 /**
