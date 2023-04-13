@@ -50,23 +50,12 @@ static void revc(char *lbuff, char *rbuff)
     }
 }
 
-static void itoa(char *buff, char bs, int num)
+static void uitoa(char *buff, char bs, unsigned int num)
 {
     char *ptr = buff;
+    int div = (bs == 'x') ? 16 : 10;
     unsigned int unum = num;
-    int div = 10;
 
-    /* If %d is specified and NUM is negative, put ‘-’ in the head. */
-    if ((bs == 'd') && (num < 0))
-    {
-        *ptr++ = '-';
-        buff++;
-        unum = -num;
-    }
-    else if (bs == 'x')
-        div = 16;
-
-    /* Divide UNUM by DIVISOR until UNUM != 0. */
     int rmnd;
     do
     {
@@ -81,6 +70,25 @@ static void itoa(char *buff, char bs, int num)
 
     /* Reverse BUFF. */
     revc(buff, (ptr - 1));
+}
+
+static void itoa(char *buff, char bs, int num)
+{
+    unsigned int unum;
+
+    /* If %d is specified and NUM is negative, put ‘-’ in the head. */
+    if ((bs == 'd') && (num < 0))
+    {
+        *buff = '-';
+        buff++;
+        unum = -num;
+    }
+    else
+    {
+        unum = (unsigned int)num;
+    }
+
+    uitoa(buff, bs, unum);
 }
 
 /* It's UB if there is no va_end() call before return statement in such function. */
@@ -149,9 +157,14 @@ int printf(const char *restrict format, ...)
             switch (ch)
             {
                 case 'd':
-                case 'u':
                 case 'x':
                     itoa(buff, ch, va_arg(params, int));
+                    str = buff;
+                    goto str_out;
+                    break;
+
+                case 'u':
+                    uitoa(buff, ch, va_arg(params, unsigned int));
                     str = buff;
                     goto str_out;
                     break;

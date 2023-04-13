@@ -20,7 +20,7 @@ static size_t heap_nodes = 0;
 /**
  * @brief In addition to the data, each node has a header with this format.
  */
-typedef struct __attribute__ ((aligned (HEAP_ALIGN))) heap_node
+typedef struct __attribute__ ((aligned (KERNEL_HEAP_ALIGN))) heap_node
 {
     size_t gap_sz;
     size_t sz;
@@ -44,13 +44,13 @@ static heap_node_type *trail_heap_space(heap_node_type *node, size_t sz)
  */
 static size_t align_size(size_t sz)
 {
-    if ((sz > HEAP_ALIGN) && (sz % HEAP_ALIGN != 0))
+    if ((sz > KERNEL_HEAP_ALIGN) && (sz % KERNEL_HEAP_ALIGN != 0))
     {
-        sz = ((sz / HEAP_ALIGN) + 1) * HEAP_ALIGN;
+        sz = ((sz / KERNEL_HEAP_ALIGN) + 1) * KERNEL_HEAP_ALIGN;
     }
-    else if (sz < HEAP_ALIGN)
+    else if (sz < KERNEL_HEAP_ALIGN)
     {
-        sz = HEAP_ALIGN;
+        sz = KERNEL_HEAP_ALIGN;
     }
     return sz;
 }
@@ -147,12 +147,12 @@ void kfree(void *ptr)
     if (heap_nodes == 0)
         die("kfree(): no heap nodes!\n");
 
-    if ((ptrdiff_t)ptr % HEAP_ALIGN != 0)
+    if ((ptrdiff_t)ptr % KERNEL_HEAP_ALIGN != 0)
         die("kfree(): invalid ptr align!\n");
 
     {
         bool is_not_valid_0 = ptr < ((void *)kernel_heap_start + sizeof(heap_node_type));
-        bool is_not_valid_1 = ptr > ((void *)kernel_heap_end - sizeof(heap_node_type) - HEAP_ALIGN);
+        bool is_not_valid_1 = ptr > ((void *)kernel_heap_end - sizeof(heap_node_type) - KERNEL_HEAP_ALIGN);
 
         if (is_not_valid_0 || is_not_valid_1)
             die("kfree(): invalid ptr heap range!\n");

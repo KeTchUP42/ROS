@@ -18,4 +18,9 @@ extern unsigned char __kernel_stack_end[];
  */
 extern const size_t __kernel_stack_size[];
 
+/**
+ * @brief Kernel user-friendly stack size.
+ */
+#define KERNEL_STACK_SIZE ((size_t)__kernel_stack_size)
+
 #endif // KSTACK_H

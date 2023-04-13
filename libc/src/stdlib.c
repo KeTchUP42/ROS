@@ -5,7 +5,7 @@
 void abort(void)
 {
 #ifdef KERNEL_CODE
-    puts("KERNEL PANIC!\n");
+    puts("KERNEL PANIC!\n\04");
     __asm__("hlt");
 #else
     // TODO: exit() syscall
