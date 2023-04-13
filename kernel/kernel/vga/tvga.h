@@ -2,11 +2,12 @@
 #define TVGA_H
 
 #include <kernel/vga/vga.h>
+#include <kernel/arch/io/vga/vga.h>
 
 #include <stdint.h>
 
 /* Hardware text mode color constants. */
-enum tvga_color
+enum text_vga_color
 {
     TVGA_COLOR_BLACK = 0,
     TVGA_COLOR_BLUE = 1,
@@ -26,22 +27,16 @@ enum tvga_color
     TVGA_COLOR_WHITE = 15,
 };
 
-#define VGA_TEXT ((void*)(0xB8000))
-#define VGA_TEXT_WIDTH (80)
-#define VGA_TEXT_HEIGHT (25)
-#define VGA_TEXT_COLOR_TYPE uint8_t
-#define VGA_TEXT_CELL_TYPE uint16_t
-
 const vga_entry_type *system_text_vga(void);
 
-static inline VGA_TEXT_COLOR_TYPE tvga_entry_color(enum tvga_color fg, enum tvga_color bg)
+static inline VGA_TEXT_COLOR_TYPE tvga_color(enum text_vga_color fg, enum text_vga_color bg)
 {
     return fg | (bg << ((sizeof(VGA_TEXT_COLOR_TYPE) * 8) / 2));
 }
 
-static inline VGA_TEXT_CELL_TYPE tvga_entry(unsigned char uc, VGA_TEXT_COLOR_TYPE color)
+static inline VGA_TEXT_CELL_TYPE tvga_cell(unsigned char ch, VGA_TEXT_COLOR_TYPE color)
 {
-    return ((VGA_TEXT_CELL_TYPE) uc) | (((VGA_TEXT_CELL_TYPE) color) << ((sizeof(VGA_TEXT_CELL_TYPE) * 8) / 2));
+    return ((VGA_TEXT_CELL_TYPE) ch) | (((VGA_TEXT_CELL_TYPE) color) << ((sizeof(VGA_TEXT_CELL_TYPE) * 8) / 2));
 }
 
 #endif // TVGA_H

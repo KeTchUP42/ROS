@@ -20,7 +20,7 @@ AS = nasm
 AS_FLAGS = -felf32
 
 CC = i686-elf-gcc
-CC_FLAGS = -std=gnu99 -O2 -Wall -Wextra -Werror -ffreestanding -DKERNEL_CODE
+CC_FLAGS = -std=gnu99 -O2 -Wall -Wextra -Werror -ffreestanding -DKERNEL_CODE -DARCH_X86
 
 AR = i686-elf-ar
 AR_FLAGS = crs --target=elf32-i386
@@ -32,14 +32,16 @@ LD_SCRIPT = $(BUILD_SCRIPTS)/kernel.ld
 LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 
 ASM_SRC = kernel/kernel/arch/boot/i386-boot.s
-KERNEL_SRC = kernel/kernel/kernel.c		  \
-			 kernel/kernel/dctors.c       \
-			 kernel/kernel/init.c         \
-			 kernel/kernel/fini.c         \
-			 kernel/kernel/memory/kheap.c \
-			 kernel/kernel/vga/tvga.c     \
-			 kernel/kernel/tty/tty.c      \
-			 kernel/kernel/tty/ktty.c     \
+ARCH_SRC =
+KERNEL_SRC = $(ARCH_SRC)
+KERNEL_SRC += kernel/kernel/kernel.c	   \
+			  kernel/kernel/dctors.c       \
+			  kernel/kernel/init.c         \
+			  kernel/kernel/fini.c         \
+			  kernel/kernel/memory/kheap.c \
+			  kernel/kernel/vga/tvga.c     \
+			  kernel/kernel/tty/tty.c      \
+			  kernel/kernel/tty/ktty.c     \
 
 ######################################################################
 # IF YOU WANT TO ADD SOME ADDITIONAL KERNEL MODULES CREATE DIR       #
