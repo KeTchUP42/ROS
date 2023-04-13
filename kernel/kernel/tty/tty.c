@@ -294,7 +294,7 @@ void tty_clean(struct tty_entry *tty)
         for (size_t x = 0; x < tty_width; ++x)
         {
             const size_t index = h_index + x;
-            tty->mem_buffer[index] = tvga_cell(' ', tty->color);
+            tty->mem_buffer[index] = vga_cell_txt(' ', tty->color);
         }
     }
     tty->cursor_row = 0;
@@ -400,7 +400,7 @@ bool tty_is_present(struct tty_entry *tty)
 static void tty_put(tty_entry_type *tty, char ch)
 {
     const size_t i = tty->cursor_row * tty->tty_width + tty->cursor_column;
-    tty->mem_buffer[i] = tvga_cell(ch, tty->color);
+    tty->mem_buffer[i] = vga_cell_txt(ch, tty->color);
 }
 
 static void tty_shift_buffer_b(tty_entry_type *tty, size_t n)

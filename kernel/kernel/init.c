@@ -5,6 +5,7 @@
 
 static void tty_init(void)
 {
+    vga_disable_cursor_txt();
     tty_add(kernel_default_tty());
 }
 

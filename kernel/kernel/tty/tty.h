@@ -2,7 +2,6 @@
 #define TTY_H
 
 #include <stddef.h>
-#include <stdint.h>
 #include <stdbool.h>
 
 #include <kernel/vga/vga.h>
