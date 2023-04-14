@@ -95,8 +95,7 @@ tty_entry_type *tty_create(size_t w, size_t h, TTY_COLOR_TYPE clr, struct screen
     tty->scrn = scrn;
 
     /**
-     * tty->cursor_row = 0;
-     * tty->cursor_column = 0;
+     * It sets to zero tty row and column:
      */
     tty_clean(tty);
     return tty;

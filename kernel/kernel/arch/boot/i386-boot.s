@@ -64,7 +64,11 @@ _start:
 	; in assembly as languages such as C cannot function without a stack.
     extern __kernel_stack_start
 	mov esp, __kernel_stack_start
- 
+
+    ; Pushes multiboot specified bootloader parameters to the stack.
+    push eax
+    push ebx
+
 	; This is a good place to initialize crucial processor state before the
 	; high-level kernel is entered. It's best to minimize the early
 	; environment where crucial features are offline. Note that the

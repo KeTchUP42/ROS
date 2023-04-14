@@ -34,14 +34,15 @@ LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 ASM_SRC = kernel/kernel/arch/boot/i386-boot.s
 ARCH_SRC =
 KERNEL_SRC = $(ARCH_SRC)
-KERNEL_SRC += kernel/kernel/kernel.c	   \
-			  kernel/kernel/dctors.c       \
-			  kernel/kernel/init.c         \
-			  kernel/kernel/fini.c         \
-			  kernel/kernel/memory/kheap.c \
-			  kernel/kernel/vga/tvga.c     \
-			  kernel/kernel/tty/tty.c      \
-			  kernel/kernel/tty/ktty.c     \
+KERNEL_SRC += kernel/kernel/kernel.c	     \
+			  kernel/kernel/dctors.c         \
+			  kernel/kernel/init.c           \
+			  kernel/kernel/fini.c           \
+			  kernel/kernel/memory/kheap.c   \
+			  kernel/kernel/memory/sysmmap.c \
+			  kernel/kernel/vga/tvga.c       \
+			  kernel/kernel/tty/tty.c        \
+			  kernel/kernel/tty/ktty.c       \
 
 ######################################################################
 # IF YOU WANT TO ADD SOME ADDITIONAL KERNEL MODULES CREATE DIR       #
