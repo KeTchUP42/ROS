@@ -120,7 +120,7 @@ static screen_node_type *scrn_node_create(tty_entry_type *tty)
     /* Auto sets current active tty: */
     scrn_node->tty_active = tty;
 
-    screen_node_root->next = NULL;
+    scrn_node->next = NULL;
     return scrn_node;
 }
 
@@ -304,7 +304,6 @@ void tty_clean(struct tty_entry *tty)
 void tty_dealloc_all(void)
 {
     screen_node_type *scrn_node = screen_node_root;
-    screen_node_root = NULL;
 
     while (scrn_node != NULL)
     {
@@ -327,6 +326,8 @@ void tty_dealloc_all(void)
             kfree(tmp);
         }
     }
+
+    screen_node_root = NULL;
 }
 
 static screen_node_type *scrn_node_with_scrn(screen_node_type *scrn_root, screen_zone_type *scrn)

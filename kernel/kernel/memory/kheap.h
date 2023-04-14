@@ -53,8 +53,13 @@ void kfree(void *ptr);
 size_t kheap_left(void);
 
 /**
- * @brief Available kernel heap size in bytes.
+ * @brief Allocated kernel heap memory size in bytes.
  */
-size_t kheap_nodes(void);
+size_t kheap_allocated(void);
+
+/**
+ * @brief Allocated kernel heap nodes count.
+ */
+size_t kheap_nodes_count(void);
 
 #endif // KHEAP_H
