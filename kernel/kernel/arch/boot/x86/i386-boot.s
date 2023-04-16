@@ -77,6 +77,10 @@ _start:
 	; yet. The GDT should be loaded here. Paging should be enabled here.
 	; C++ features such as global constructors and exceptions will require
 	; runtime support to work as well.
+
+    extern __i386_cpu_setup
+    call __i386_cpu_setup
+
 	extern kernel_init
     call kernel_init
  
@@ -109,3 +113,4 @@ _start:
     hlt
 	jmp .hang
 .end:
+

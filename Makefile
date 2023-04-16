@@ -20,7 +20,7 @@ AS = nasm
 AS_FLAGS = -felf32
 
 CC = i686-elf-gcc
-CC_FLAGS = -std=gnu99 -O2 -Wall -Wextra -Werror -ffreestanding -DKERNEL_CODE -DARCH_X86
+CC_FLAGS = -std=gnu99 -O2 -Wall -Wextra -ffreestanding -DKERNEL_CODE -DARCH_X86
 
 AR = i686-elf-ar
 AR_FLAGS = crs --target=elf32-i386
@@ -31,10 +31,10 @@ LINKER = i686-elf-ld
 LD_SCRIPT = $(BUILD_SCRIPTS)/kernel.ld
 LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 
-ASM_SRC = kernel/kernel/arch/boot/i386-boot.s
-ARCH_SRC =
+ASM_SRC = kernel/kernel/arch/boot/x86/i386-boot.s
+ARCH_SRC = kernel/kernel/arch/boot/x86/i386-setup.c
 KERNEL_SRC = $(ARCH_SRC)
-KERNEL_SRC += kernel/kernel/kernel.c	     \
+KERNEL_SRC += kernel/kernel/kernel.c		 \
 			  kernel/kernel/dctors.c         \
 			  kernel/kernel/init.c           \
 			  kernel/kernel/fini.c           \
@@ -106,7 +106,7 @@ $(BUILD_DIR)/%.s.o: %.s
 	$(AS) $(AS_FLAGS) $< -o $@
 
 run: $(IMAGE_PATH)
-	qemu-system-i386 -cdrom $(IMAGE_PATH)
+	qemu-system-i386 -cdrom $(IMAGE_PATH) -d cpu_reset -D $(ISO_DIR)/qemu-log.txt
 
 clean:
 	rm -rf $(ISO_DIR)/*
