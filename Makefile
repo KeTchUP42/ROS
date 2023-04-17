@@ -43,6 +43,7 @@ KERNEL_SRC += kernel/kernel/kernel.c		 \
 			  kernel/kernel/vga/tvga.c       \
 			  kernel/kernel/tty/tty.c        \
 			  kernel/kernel/tty/ktty.c       \
+			  kernel/kernel/ints/ihub.c      \
 
 ######################################################################
 # IF YOU WANT TO ADD SOME ADDITIONAL KERNEL MODULES CREATE DIR       #
