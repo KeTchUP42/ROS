@@ -58,4 +58,9 @@
 #define GDT_OFF_USER_DATA_SEGMENT   (0x0020)
 #define GDT_OFF_TSS_SEGMENT         (0x0028)
 
+/**
+ * @brief This function saves the address to the TSS, so it will be restored from there when an interrupt occurs.
+ */
+void __save_kernel_stack(void *esp);
+
 #endif // I386_SETUP_H

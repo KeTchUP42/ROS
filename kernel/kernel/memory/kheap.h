@@ -23,7 +23,7 @@ extern const size_t __kernel_heap_size[];
 /**
  * @brief Align of kmalloc() return ptr.
  */
-#define KERNEL_HEAP_ALIGN 16
+#define KERNEL_HEAP_ALIGN (0x10)
 
 /**
  * @brief Kernel user-friendly heap size.
