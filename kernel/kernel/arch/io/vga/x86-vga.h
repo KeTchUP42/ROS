@@ -17,7 +17,7 @@
 #define VGA_TEXT_HEIGHT (25)
 #define VGA_TEXT_COLOR_TYPE uint8_t
 #define VGA_TEXT_CELL_TYPE uint16_t
-#define VGA_TEXT_CURSOR 1
+#define VGA_TEXT_CURSOR (1)
 
 static inline void __enable_cursor_txt(uint8_t c_start, uint8_t c_end)
 {
