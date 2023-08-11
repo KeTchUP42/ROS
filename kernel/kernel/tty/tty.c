@@ -518,5 +518,13 @@ void tty_write(struct tty_entry *tty, const char *data, size_t sz)
 
 void tty_print(struct tty_entry *tty, const char *str)
 {
+    while (*str)
+    {
+        tty_putchar(tty, *str);
+        str++;
+    }
+
+#if 0
     tty_write(tty, str, strlen(str));
+#endif
 }

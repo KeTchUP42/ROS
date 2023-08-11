@@ -9,7 +9,7 @@ void sleep(size_t mls)
 #ifdef KERNEL_CODE
     for (size_t i = 0; i < mls; ++i)
         for (size_t j = 0; j < WAIT_FOR_MILLISECOND; ++j)
-            wait();
+            cpu_wait();
 #else
     // TODO: sleep() syscall
 #endif

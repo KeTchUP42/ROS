@@ -1,15 +1,11 @@
 #ifndef CPU_INTS_X86_VECTOR_H
 #define CPU_INTS_X86_VECTOR_H
 
-#ifndef KERNEL_CODE
-#error "DRIVERS ARE ONLY AVAILABLE IN THE KERNEL CODE!"
-#endif
+/**********************************/
+#include <kernel/arch/x86-driver.h>
+/**********************************/
 
-#ifndef ARCH_X86
-#error "THIS CODE ONLY AVAILABLE ON X86 ARCHITECTURE!"
-#endif
-
-#include "x86-ints-tool.h"
+#include "x86-ints-cfg.h"
 
 #define CPU_INTS_VECTOR_SIZE (256)
 #define DEFINE_HANDLER( NUM ) [NUM] = &INT_NAME(NUM),

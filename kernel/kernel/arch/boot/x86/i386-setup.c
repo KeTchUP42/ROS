@@ -162,7 +162,7 @@ static void gdt_setup(void)
 /*------------------------------------IDT-------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-#include <kernel/arch/cpu/ints/ints-tool.h>
+#include <kernel/arch/cpu/ints/ints-cfg.h>
 
 typedef struct
 {
@@ -221,6 +221,9 @@ void __i386_cpu_setup(void)
     /* FULL CPU SETUP: */
     gdt_setup();
     idt_setup();
+
+    /* Initialize interrupts system */
+    ihard_sys_init();
 
     __asm__ ("sti");
 }

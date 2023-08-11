@@ -1,13 +1,9 @@
 #ifndef IO_VGA_X86_VGA_H
 #define IO_VGA_X86_VGA_H
 
-#ifndef KERNEL_CODE
-#error "DRIVERS ARE ONLY AVAILABLE IN THE KERNEL CODE!"
-#endif
-
-#ifndef ARCH_X86
-#error "THIS CODE ONLY AVAILABLE ON X86 ARCHITECTURE!"
-#endif
+/**********************************/
+#include <kernel/arch/x86-driver.h>
+/**********************************/
 
 #include <kernel/arch/io/ports/x86-ports.h>
 #include <stdint.h>

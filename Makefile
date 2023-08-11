@@ -12,7 +12,6 @@
 #
 # YOUR KERNEL-CODE MUST CONTAIN:
 # kernel/arch/boot/x86_64-boot.s - _start function must setup and jump to the long mode and then call kernel entry point.
-#
 
 AS = nasm
 AS_FLAGS = -felf32
@@ -31,8 +30,9 @@ LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 
 ASM_SRC = kernel/kernel/arch/boot/x86/i386-boot.s
 
-ARCH_SRC =	kernel/kernel/arch/boot/x86/i386-setup.c \
-		kernel/kernel/arch/cpu/ints/x86-ihard.c
+ARCH_SRC = kernel/kernel/arch/boot/x86/i386-setup.c        \
+		kernel/kernel/arch/cpu/ints/x86-ihard.c            \
+		kernel/kernel/arch/io/ps-2/keyboard/x86-keyboard.c \
 
 KERNEL_SRC = $(ARCH_SRC)
 KERNEL_SRC += kernel/kernel/kernel.c   \
