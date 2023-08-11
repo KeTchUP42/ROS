@@ -13,8 +13,6 @@
 # YOUR KERNEL-CODE MUST CONTAIN:
 # kernel/arch/boot/x86_64-boot.s - _start function must setup and jump to the long mode and then call kernel entry point.
 #
-# TOOLCHAIN:
-# https://github.com/danidoco/x86_64-elf-gcc-toolchain
 
 AS = nasm
 AS_FLAGS = -felf32
@@ -32,18 +30,21 @@ LD_SCRIPT = $(BUILD_SCRIPTS)/kernel.ld
 LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 
 ASM_SRC = kernel/kernel/arch/boot/x86/i386-boot.s
-ARCH_SRC = kernel/kernel/arch/boot/x86/i386-setup.c
+
+ARCH_SRC =	kernel/kernel/arch/boot/x86/i386-setup.c \
+		kernel/kernel/arch/cpu/ints/x86-ihard.c
+
 KERNEL_SRC = $(ARCH_SRC)
-KERNEL_SRC += kernel/kernel/kernel.c		 \
-			  kernel/kernel/dctors.c         \
-			  kernel/kernel/init.c           \
-			  kernel/kernel/fini.c           \
-			  kernel/kernel/memory/kheap.c   \
-			  kernel/kernel/memory/sysmmap.c \
-			  kernel/kernel/vga/tvga.c       \
-			  kernel/kernel/tty/tty.c        \
-			  kernel/kernel/tty/ktty.c       \
-			  kernel/kernel/ints/ihub.c      \
+KERNEL_SRC += kernel/kernel/kernel.c   \
+		kernel/kernel/dctors.c         \
+		kernel/kernel/init.c           \
+		kernel/kernel/fini.c           \
+		kernel/kernel/memory/kheap.c   \
+		kernel/kernel/memory/sysmmap.c \
+		kernel/kernel/vga/tvga.c       \
+		kernel/kernel/tty/tty.c        \
+		kernel/kernel/tty/ktty.c       \
+		kernel/kernel/ints/ihub.c      \
 
 ######################################################################
 # IF YOU WANT TO ADD SOME ADDITIONAL KERNEL MODULES CREATE DIR       #
