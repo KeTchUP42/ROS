@@ -31,7 +31,9 @@ LINKER_FLAGS = -T$(LD_SCRIPT) -nostdlib --nmagic --oformat=elf32-i386
 ASM_SRC = kernel/kernel/arch/boot/x86/i386-boot.s
 
 ARCH_SRC = kernel/kernel/arch/boot/x86/i386-setup.c        \
+		kernel/kernel/arch/io/vga/x86-vga.c				   \
 		kernel/kernel/arch/cpu/ints/x86-ihard.c            \
+		kernel/kernel/arch/cpu/ints/x86-pic.c              \
 		kernel/kernel/arch/io/ps-2/keyboard/x86-keyboard.c \
 
 KERNEL_SRC = $(ARCH_SRC)

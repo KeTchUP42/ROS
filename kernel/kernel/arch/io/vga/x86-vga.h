@@ -8,50 +8,49 @@
 #include <kernel/arch/io/ports/x86-ports.h>
 #include <stdint.h>
 
-#define VGA_TEXT ((void*)(0xB8000))
-#define VGA_TEXT_WIDTH (80)
-#define VGA_TEXT_HEIGHT (25)
+#define VGA_TEXT            ((void*)(0xB8000))
+#define VGA_TEXT_WIDTH      80
+#define VGA_TEXT_HEIGHT     25
 #define VGA_TEXT_COLOR_TYPE uint8_t
-#define VGA_TEXT_CELL_TYPE uint16_t
-#define VGA_TEXT_CURSOR (1)
+#define VGA_TEXT_CELL_TYPE  uint16_t
+#define VGA_TEXT_CURSOR     0x01
 
-static inline void __enable_cursor_txt(uint8_t c_start, uint8_t c_end)
+#if !VGA_TEXT_CURSOR
+#warning "SYSTEM DO NOT HAVE CURSOR SUPPORT!"
+#endif
+
+static inline void vga_enable_cursor_txt(uint8_t c_start, uint8_t c_end)
 {
-    outb(0x3D4, 0x0A);
-    outb(0x3D5, (inb(0x3D5) & 0xC0) | c_start);
-
-    outb(0x3D4, 0x0B);
-    outb(0x3D5, (inb(0x3D5) & 0xE0) | c_end);
+#if VGA_TEXT_CURSOR
+    void __vga_x86_enable_cursor_txt(uint8_t c_start, uint8_t c_end);
+    __vga_x86_enable_cursor_txt(c_start, c_end);
+#endif
 }
 
-static inline void __disable_cursor_txt(void)
+static inline void vga_disable_cursor_txt(void)
 {
-    outb(0x3D4, 0x0A);
-    outb(0x3D5, 0x20);
+#if VGA_TEXT_CURSOR
+    void __vga_x86_disable_cursor_txt(void);
+    __vga_x86_disable_cursor_txt();
+#endif
 }
 
-static inline void __update_cursor_txt(int x, int y)
+static inline void vga_update_cursor_txt(int x, int y)
 {
-    uint16_t pos = y * VGA_TEXT_WIDTH + x;
-
-    outb(0x3D4, 0x0F);
-    outb(0x3D5, (uint8_t) (pos & 0xFF));
-    outb(0x3D4, 0x0E);
-    outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+#if VGA_TEXT_CURSOR
+    void __vga_x86_update_cursor_txt(int x, int y);
+    __vga_x86_update_cursor_txt(x, y);
+#endif
 }
 
-/**
- * @brief With this code, you get: pos = y * VGA_TEXT_WIDTH + x.
- * To obtain the coordinates, just calculate: y = pos / VGA_TEXT_WIDTH; x = pos % VGA_TEXT_WIDTH;
- */
-static inline uint16_t __get_cursor_position_txt(void)
+static inline uint16_t vga_get_cursor_position_txt(void)
 {
-    uint16_t pos = 0;
-    outb(0x3D4, 0x0F);
-    pos |= inb(0x3D5);
-    outb(0x3D4, 0x0E);
-    pos |= ((uint16_t)inb(0x3D5)) << 8;
-    return pos;
+#if VGA_TEXT_CURSOR
+    uint16_t __vga_x86_get_cursor_position_txt(void);
+    return __vga_x86_get_cursor_position_txt();
+#else
+    return 0;
+#endif
 }
 
 #endif // IO_VGA_X86_VGA_H

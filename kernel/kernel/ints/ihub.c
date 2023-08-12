@@ -27,7 +27,7 @@ void __int_handler(uint32_t my_num)
         if (ch == '\b')
         {
             putchar(' ');
-            putchar(ch);
+            putchar('\b');
         }
     }
 }

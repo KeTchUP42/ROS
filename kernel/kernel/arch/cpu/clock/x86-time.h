@@ -7,7 +7,7 @@
 
 #include <kernel/arch/io/ports/x86-ports.h>
 
-#define WAIT_FOR_MILLISECOND (10000)
+#define WAIT_FOR_MILLISECOND 10000
 
 static inline void cpu_wait(void)
 {

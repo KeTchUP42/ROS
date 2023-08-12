@@ -8,8 +8,6 @@
 #include <stdint.h>
 #include <libc/stdlib.h>
 
-#include "x86-ihard.h"
-
 typedef void (*cpu_int_callback_t)(uint32_t);
 
 #define INT_NAME( NUM ) MACRO_CONCAT_2(__int_handler_, NUM)

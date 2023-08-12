@@ -5,9 +5,6 @@
 #include <kernel/arch/x86-driver.h>
 /**********************************/
 
-#include <kernel/arch/io/ports/x86-ports.h>
-#include <kernel/arch/cpu/clock/time.h>
-
 #include <stdint.h>
 
 #define PIC_INTS_SYS       0x01        /* Indicates that kernel uses old-style PIC chip */
@@ -23,21 +20,7 @@
 
 #define PIC_EOI            0x20        /* End-of-interrupt command code */
 
-static inline void pic_send_eoi(uint8_t irq)
-{
-    if (irq >= 8)
-        outb(PIC_SLV_COMMAND, PIC_EOI);
-
-    outb(PIC_MST_COMMAND, PIC_EOI);
-}
-
-#if 0
-static inline void pic_send_eoi_all(void)
-{
-    outb(PIC_SLV_COMMAND, PIC_EOI);
-    outb(PIC_MST_COMMAND, PIC_EOI);
-}
-#endif
+void pic_send_eoi(uint8_t irq);
 
 #define ICW1_ICW4       0x01        /* Indicates that ICW4 will be present */
 #define ICW1_SINGLE     0x02        /* Single (cascade) mode */
@@ -58,37 +41,7 @@ static inline void pic_send_eoi_all(void)
  *      vectors on the master become offset1..offset1+7
  * @param offset2 - same for slave PIC: offset2..offset2+7
  */
-static inline void pic_remap_offsets(uint8_t offset1, uint8_t offset2)
-{
-    uint8_t master_mask;
-    uint8_t slave_mask;
-
-    master_mask = inb(PIC_MST_DATA);
-    slave_mask = inb(PIC_SLV_DATA);
-    /* Starts the initialization sequence (in cascade mode) */
-    outb(PIC_MST_COMMAND, ICW1_INIT | ICW1_ICW4);
-    cpu_wait();
-    outb(PIC_SLV_COMMAND, ICW1_INIT | ICW1_ICW4);
-    cpu_wait();
-    outb(PIC_MST_DATA, offset1);    /* ICW2: Master PIC vector offset */
-    cpu_wait();
-    outb(PIC_SLV_DATA, offset2);    /* ICW2: Slave PIC vector offset */
-    cpu_wait();
-    /* ICW3: tell Master PIC that there is a slave PIC at IRQ2 (0000 0100) */
-    outb(PIC_MST_DATA, 4);
-    cpu_wait();
-    /* ICW3: tell Slave PIC its cascade identity (0000 0010) */
-    outb(PIC_SLV_DATA, 2);
-    cpu_wait();
-    /* ICW4: have the PICs use 8086 mode (and not 8080 mode) */
-    outb(PIC_MST_DATA, ICW4_8086);
-    cpu_wait();
-    outb(PIC_SLV_DATA, ICW4_8086);
-    cpu_wait();
-
-    outb(PIC_MST_DATA, master_mask);
-    outb(PIC_SLV_DATA, slave_mask);
-}
+void pic_remap_offsets(uint8_t offset1, uint8_t offset2);
 
 /**
  * @brief Inits and remaps PIC offsets to useable values:
@@ -102,77 +55,31 @@ static inline void pic_enable(void)
 /**
  * @brief If you are going to use the processor local APIC and the IOAPIC, you must first disable the PIC:
  */
-static inline void pic_disable(void)
-{
-    outb(PIC_MST_DATA, 0xFF);
-    outb(PIC_SLV_DATA, 0xFF);
-}
+void pic_disable(void);
 
 /**
  * @brief Sets needed irq line mask-register bit:
  *
  * @param irqline Number of irq line [0-15]
  */
-static inline void pic_irq_set_mask(uint8_t irqline)
-{
-    uint16_t port;
-    uint8_t value;
-
-    if (irqline < 8)
-    {
-        port = PIC_MST_DATA;
-    }
-    else
-    {
-        port = PIC_SLV_DATA;
-        irqline -= 8;
-    }
-    value = inb(port) | (1 << irqline);
-    outb(port, value);
-}
+void pic_irq_set_mask(uint8_t irqline);
 
 /**
  * @brief Clears needed irq line mask-register bit:
  *
  * @param irqline Number of irq line [0-15]
  */
-static inline void pic_irq_clear_mask(uint8_t irqline)
-{
-    uint16_t port;
-    uint8_t value;
+void pic_irq_clear_mask(uint8_t irqline);
 
-    if (irqline < 8)
-    {
-        port = PIC_MST_DATA;
-    }
-    else
-    {
-        port = PIC_SLV_DATA;
-        irqline -= 8;
-    }
-    value = inb(port) & ~(1 << irqline);
-    outb(port, value);
-}
-
-
-#define PIC_READ_IRR                0x0a    /* OCW3 irq ready next CMD read */
-#define PIC_READ_ISR                0x0b    /* OCW3 irq service next CMD read */
-
-/* Helper func */
-static uint16_t __pic_get_irq_reg(uint8_t ocw3)
-{
-    /* OCW3 to PIC CMD to get the register values.  PIC2 is chained, and
-     * represents IRQs 8-15.  PIC1 is IRQs 0-7, with 2 being the chain */
-    outb(PIC_MST_COMMAND, ocw3);
-    outb(PIC_SLV_COMMAND, ocw3);
-    return (inb(PIC_SLV_COMMAND) << 8) | inb(PIC_MST_COMMAND);
-}
+#define PIC_READ_IRR    0x0A  /* OCW3 irq ready next CMD read */
+#define PIC_READ_ISR    0x0B  /* OCW3 irq service next CMD read */
 
 /**
  * @brief Returns the combined value of the cascaded PICs irq request register.
  */
 static inline uint16_t pic_get_irr(void)
 {
+    uint16_t __pic_get_irq_reg(uint8_t ocw3);
     return __pic_get_irq_reg(PIC_READ_IRR);
 }
 
@@ -181,6 +88,7 @@ static inline uint16_t pic_get_irr(void)
  */
 static inline uint16_t pic_get_isr(void)
 {
+    uint16_t __pic_get_irq_reg(uint8_t ocw3);
     return __pic_get_irq_reg(PIC_READ_ISR);
 }
 

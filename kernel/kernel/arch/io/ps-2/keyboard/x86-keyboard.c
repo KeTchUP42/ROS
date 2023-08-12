@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-static uint8_t keymap_ps2[128] =
+static char keymap_ps2[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8', /* 9 */
     '9', '0', '-', '=', '\b', /* Backspace */
@@ -47,7 +47,7 @@ static uint8_t keymap_ps2[128] =
 #define KEYBOARD_STATUS_PORT    0x64
 #define KEYBOARD_DATA_PORT      0x60
 
-char kb_read_ch(void)
+char __ps2_x86_kb_read_ch(void)
 {
     uint8_t status;
     char keycode;
@@ -59,7 +59,7 @@ char kb_read_ch(void)
         keycode = inb(KEYBOARD_DATA_PORT);
         if (keycode < 0)
             return 0;
-        return keymap_ps2[keycode];
+        return keymap_ps2[(uint8_t)keycode];
     }
     return 0;
 }

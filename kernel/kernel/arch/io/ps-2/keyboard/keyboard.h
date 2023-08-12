@@ -7,5 +7,4 @@
 #error "KERNEL CAN NOT BE BUILD WITH SUCH ARCHITECTURE!"
 #endif
 
-
 #endif // IO_PS2_KEYBOARD_H

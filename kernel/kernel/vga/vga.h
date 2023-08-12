@@ -36,9 +36,7 @@ static inline void *vga_cell(const struct vga_entry *vga, const struct screen_zo
     }
     return NULL;
 }
-/**
- * @brief Plain screen zone compare function.
- */
+
 static inline bool screen_zone_cmp(const void *lhs, const void *rhs)
 {
     screen_zone_type *lscrn = (screen_zone_type *)lhs;
